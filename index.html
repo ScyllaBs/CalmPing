@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Calmify - Mode Tampon</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f2f5fa;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 750px;
+        margin: 30px auto;
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    h1 { margin-top: 0; }
+    textarea {
+        width: 100%;
+        min-height: 130px;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        resize: vertical;
+        font-size: 15px;
+    }
+    button {
+        padding: 10px 18px;
+        background: #2f74c0;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 10px;
+        margin-right: 10px;
+        font-size: 15px;
+    }
+    .result {
+        background: #eef5ff;
+        padding: 15px;
+        border-radius: 6px;
+        margin-top: 20px;
+    }
+</style>
+</head>
+
+<body>
+<div class="container">
+    <h1>Calmify — Mode Tampon</h1>
+    <p>Écris ce que tu veux dire, même si tu es énervé. L'application te renvoie une version apaisée.</p>
+
+    <textarea id="input" placeholder="Écris ici ce que tu voudrais dire... (même si c'est violent)"></textarea>
+
+    <br>
+    <button onclick="calmify()">Calmifier</button>
+    <button onclick="resetAll()">Reset</button>
+    <button onclick="copyCalm()">Copier la version calme</button>
+
+    <div class="result" id="result" style="display:none;">
+        <h3>Version apaisée :</h3>
+        <p id="calmText"></p>
+    </div>
+</div>
+
+<script>
+function calmify() {
+    const text = document.getElementById("input").value.trim();
+    if (!text) return;
+
+    let output = text;
+
+    // 1) Retirer insultes
+    const insults = ["putain","merde","connard","enculé","fdp","nique","ta gueule","tg"];
+    insults.forEach(i => {
+        const reg = new RegExp(i, "gi");
+        output = output.replace(reg, "");
+    });
+
+    // 2) Convertir les phrases agressives
+    if (/^tu/i.test(output)) {
+        output = output.replace(/^tu/i, "Je me sens perturbé(e) car tu sembles");
+    }
+
+    // 3) Apaiser le ton général
+    output = output
+        .replace(/!/g, ".")
+        .replace(/\?{2,}/g, "?");
+
+    // 4) Ajouter une intention constructive
+    output += " J’aimerais qu’on en discute calmement pour trouver une solution ensemble.";
+
+    // 5) Nettoyage final
+    output = output.replace(/\s{2,}/g, " ").trim();
+
+    document.getElementById("result").style.display = "block";
+    document.getElementById("calmText").innerText = output;
+}
+
+function resetAll() {
+    document.getElementById("input").value = "";
+    document.getElementById("result").style.display = "none";
+}
+
+function copyCalm() {
+    const text = document.getElementById("calmText").innerText;
+    navigator.clipboard.writeText(text);
+    alert("Version calme copiée !");
+}
+</script>
+
+</body>
+</html>
