@@ -1,14 +1,24 @@
-# Utilise une image Nginx (serveur web)
-FROM nginx:alpine
+# 1. Image de base
+FROM node:20-alpine
 
-# Supprime la page par défaut
-RUN rm -rf /usr/share/nginx/html/*
+# 2. Répertoire de travail dans le container
+WORKDIR /app
 
-# Copie ton index.html dans le serveur
-COPY index.html /usr/share/nginx/html/index.html
+# 3. Copier package.json et package-lock.json pour installer les dépendances
+COPY package*.json ./
 
-# Expose le port 80 pour Koyeb
-EXPOSE 80
+# 4. Installer les dépendances
+RUN npm install --production
 
-# Démarre le serveur automatiquement
-CMD ["nginx", "-g", "daemon off;"]
+# 5. Copier le reste du code
+COPY . .
+
+# 6. Définir le port (Koyeb passe le port via la variable d'environnement PORT)
+ENV PORT 8000
+
+# 7. Exposer le port pour la plateforme
+EXPOSE 8000
+
+# 8. Lancer l'application
+# Assure-toi que ton fichier principal s'appelle index.js ou adapte-le
+CMD ["node", "index.js"]
